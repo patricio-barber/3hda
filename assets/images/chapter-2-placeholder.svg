@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1500" role="img" aria-labelledby="title">
+  <title id="title">Imagen de muestra para la historia dos</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="1" x2="1"><stop stop-color="#1d292b"/><stop offset=".55" stop-color="#527071"/><stop offset="1" stop-color="#c49d7c"/></linearGradient>
+    <filter id="grain"><feTurbulence baseFrequency=".7" numOctaves="2"/><feComponentTransfer><feFuncA type="table" tableValues="0 .12"/></feComponentTransfer></filter>
+  </defs>
+  <rect width="1200" height="1500" fill="url(#bg)"/>
+  <circle cx="330" cy="370" r="220" fill="#f3d4a8" opacity=".65"/>
+  <path d="M0 940c186-70 319 92 493 9s323-75 451 1c104 62 173 38 256-4v554H0Z" fill="#111c1c" opacity=".82"/>
+  <path d="M0 1040c211 55 371-48 581 14 224 66 364-49 619 8" fill="none" stroke="#d8c0a3" stroke-width="5" opacity=".35"/>
+  <rect width="1200" height="1500" filter="url(#grain)"/>
+  <g fill="#fffaf2" font-family="Arial, sans-serif" text-anchor="middle"><text x="600" y="1345" font-size="20" letter-spacing="6">FOTO · HISTORIA II</text><text x="600" y="1383" font-size="14" letter-spacing="2">chapter-2-placeholder.svg</text></g>
+</svg>
