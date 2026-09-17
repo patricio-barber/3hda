@@ -8,9 +8,6 @@
 
 window.STORY_CONFIG = {
   siteTitle: "Tres historias de una carta de amor fallida",
-  kicker: "Una historia en tres tiempos",
-  intro:
-    "Tres encuentros. Tres despedidas. Una carta que cambia de significado con el paso del tiempo.",
   heroImage: "assets/images/hero-placeholder.svg",
 
   chapters: [

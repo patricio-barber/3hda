@@ -124,8 +124,6 @@ function updateCountdown(releaseElement) {
 function initializeSite() {
   document.title = config.siteTitle;
   document.querySelector("#site-title").textContent = config.siteTitle;
-  document.querySelector("#site-kicker").textContent = config.kicker;
-  document.querySelector("#site-intro").textContent = config.intro;
   document.querySelector("#footer-title").textContent = config.siteTitle;
   document.querySelector(".hero__image").style.backgroundImage = `url("${config.heroImage}")`;
 
