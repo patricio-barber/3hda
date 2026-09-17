@@ -1,10 +1,10 @@
 # Tres historias de una carta de amor fallida
 
-Sitio estático, gratuito y compatible con GitHub Pages. Incluye una portada, tres secciones desplazables, cuentas regresivas y contenido cifrado que solo puede abrirse con una llave secreta.
+Sitio estático y gratuito, compatible con GitHub Pages. Incluye una portada, tres secciones desplazables con cuenta regresiva y el texto de cada historia, que se muestra en cuanto se cumple la fecha de publicación.
 
 ## Vista previa en tu computadora
 
-La lectura cifrada necesita que el sitio se sirva por HTTP. Inicia un servidor local desde esta carpeta:
+Inicia un servidor local desde esta carpeta (necesario porque el sitio carga los textos con `fetch`):
 
 ```bash
 python3 -m http.server 8000
@@ -14,7 +14,7 @@ Después visita `http://localhost:8000`.
 
 ## Qué debes modificar
 
-### Título, fechas, imágenes y contacto
+### Título, fechas e imágenes
 
 Edita **`config.js`**. Cada historia tiene estos campos:
 
@@ -23,15 +23,7 @@ Edita **`config.js`**. Cada historia tiene estos campos:
 - `releaseDate`: fecha y hora de publicación.
 - `image`: ruta de su imagen.
 - `imageAlt`: descripción accesible de la foto.
-- `encryptedContent`: archivo cifrado correspondiente a la historia.
-
-También cambia `requestKeyUrl`. Puede ser tu correo:
-
-```js
-requestKeyUrl: "mailto:tu-correo@ejemplo.com"
-```
-
-Cuando una historia se desbloquee, el botón **Pedir la llave** abrirá ese medio de contacto.
+- `contentFile`: archivo HTML con el texto de la historia.
 
 La fecha usa este formato:
 
@@ -56,33 +48,22 @@ image: "assets/images/historia-uno.jpg"
 
 Usa JPG o WebP para fotografías. Como referencia, una portada de unos 2000 px de ancho y fotos verticales de unos 1200 × 1500 px se verán bien sin ser innecesariamente pesadas. Evita espacios, acentos y mayúsculas en los nombres de archivo.
 
-### Cifrar el texto de las historias
+### El texto de las historias
 
-No escribas el texto ni la llave directamente en los archivos públicos del sitio.
+Edita directamente los archivos dentro de **`content/`** (`historia-uno.html`, `historia-dos.html`, `historia-tres.html`). Escribe un párrafo `<p>` por línea, por ejemplo:
 
-1. Abre `tools/encrypt.html` en un navegador moderno.
-2. Elige el nombre correspondiente: `historia-uno`, `historia-dos` o `historia-tres`.
-3. Pulsa **Generar llave segura** y copia la llave a un lugar privado, fuera de esta carpeta.
-4. Pega la historia. Una línea vacía separa cada párrafo.
-5. Pulsa **Cifrar y descargar**.
-6. Coloca el JSON descargado dentro de `content/`, reemplazando el archivo del mismo nombre.
-7. Prueba la llave antes de publicar.
+```html
+<p>Primer párrafo de la historia.</p>
+<p>Segundo párrafo.</p>
+```
 
-Usa una llave distinta para cada historia. Nunca subas las llaves a GitHub ni las escribas en `config.js`, README, comentarios o nombres de archivo. Si pierdes una llave, el contenido no se puede recuperar del archivo cifrado.
-
-Las llaves de demostración actuales son:
-
-- Historia I: `demo-lirio-cobre-uno-2026`
-- Historia II: `demo-marea-ambar-dos-2026`
-- Historia III: `demo-carta-niebla-tres-2026`
-
-Solo abren los textos de muestra. Reemplaza los tres JSON y usa llaves nuevas antes de publicar tus historias reales.
+El texto queda visible en el código fuente del sitio; no hay cifrado ni contraseña. Solo el temporizador controla cuándo aparece el botón para leer cada historia.
 
 ## Publicar gratis en GitHub Pages
 
 1. Crea una cuenta en [GitHub](https://github.com/) si aún no tienes una.
 2. Crea un repositorio nuevo, por ejemplo `tres-historias`, y elige visibilidad **Public**.
-3. Usa **Add file → Upload files** y sube todo el contenido de esta carpeta, conservando las carpetas `assets`, `content` y `tools`.
+3. Usa **Add file → Upload files** y sube todo el contenido de esta carpeta, conservando las carpetas `assets` y `content`.
 4. Abre **Settings → Pages**.
 5. En **Build and deployment**, selecciona **Deploy from a branch**.
 6. Elige la rama **main**, la carpeta **/(root)** y pulsa **Save**.
@@ -90,10 +71,7 @@ Solo abren los textos de muestra. Reemplaza los tres JSON y usa llaves nuevas an
 
 Cada vez que reemplaces archivos en el repositorio, GitHub Pages volverá a publicar el sitio automáticamente.
 
-## Cómo funciona la protección
+## Cómo funciona el temporizador
 
-La fecha controla cuándo aparece el formulario, pero un visitante técnico todavía podría cambiar el reloj o modificar el código para mostrarlo antes. Eso no revela la historia: el contenido está cifrado con AES-GCM y la llave no forma parte del sitio.
+La fecha en `config.js` controla cuándo aparece el botón "Leer la historia". Un visitante técnico todavía podría inspeccionar el código o cambiar el reloj de su propio navegador, pero como el texto no está cifrado, cualquiera con acceso a los archivos del sitio puede leerlo desde el principio; el temporizador es solo una presentación, no una protección real.
 
-Al introducir la llave correcta, la historia se descifra únicamente en la memoria del navegador. La llave no se guarda y se tendrá que escribir nuevamente después de recargar la página.
-
-Una persona autorizada todavía puede copiar el texto o compartir su llave; ningún sitio puede impedir por completo que un lector legítimo comparta lo que ve.

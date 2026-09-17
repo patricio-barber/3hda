@@ -1,7 +1,7 @@
 const config = window.STORY_CONFIG;
 const chaptersRoot = document.querySelector("#chapters");
 const reader = document.querySelector("#story-reader");
-const decryptedStories = new Map();
+const storyContents = new Map();
 
 const pad = (value) => String(value).padStart(2, "0");
 
@@ -41,15 +41,6 @@ function countdownMarkup() {
   `;
 }
 
-function buildRequestUrl(chapter) {
-  const url = config.requestKeyUrl;
-  if (!url || !url.startsWith("mailto:")) return url || "#";
-
-  const separator = url.includes("?") ? "&" : "?";
-  const subject = encodeURIComponent(`Solicitud de llave: ${chapter.title}`);
-  return `${url}${separator}subject=${subject}`;
-}
-
 function chapterMarkup(chapter, index) {
   const release = new Date(chapter.releaseDate);
 
@@ -71,27 +62,6 @@ function chapterMarkup(chapter, index) {
           <p class="release__date">${formatReleaseDate(release)}</p>
           <p class="release__announcement" role="status" aria-live="polite"></p>
 
-          <div class="key-gate">
-            <p class="key-gate__intro">Esta historia está cifrada. Pídeme la llave para abrirla.</p>
-            <a class="request-key" href="${buildRequestUrl(chapter)}">Pedir la llave</a>
-            <form class="key-form" data-chapter-index="${index}">
-              <label for="key-${index}">Llave de acceso</label>
-              <div class="key-form__row">
-                <input
-                  id="key-${index}"
-                  name="key"
-                  type="password"
-                  autocomplete="off"
-                  autocapitalize="none"
-                  spellcheck="false"
-                  required
-                />
-                <button type="submit">Abrir</button>
-              </div>
-              <p class="key-form__status" role="status" aria-live="polite"></p>
-            </form>
-          </div>
-
           <button class="story-link" type="button" data-read-index="${index}">
             Leer la historia <span aria-hidden="true">→</span>
           </button>
@@ -101,84 +71,16 @@ function chapterMarkup(chapter, index) {
   `;
 }
 
-function base64ToBytes(value) {
-  const binary = window.atob(value);
-  return Uint8Array.from(binary, (character) => character.charCodeAt(0));
-}
-
-async function decryptContent(payload, password) {
-  const encoder = new TextEncoder();
-  const keyMaterial = await window.crypto.subtle.importKey(
-    "raw",
-    encoder.encode(password),
-    "PBKDF2",
-    false,
-    ["deriveKey"],
-  );
-  const key = await window.crypto.subtle.deriveKey(
-    {
-      name: "PBKDF2",
-      salt: base64ToBytes(payload.salt),
-      iterations: payload.iterations,
-      hash: "SHA-256",
-    },
-    keyMaterial,
-    { name: "AES-GCM", length: 256 },
-    false,
-    ["decrypt"],
-  );
-  const decrypted = await window.crypto.subtle.decrypt(
-    { name: "AES-GCM", iv: base64ToBytes(payload.iv) },
-    key,
-    base64ToBytes(payload.ciphertext),
-  );
-
-  return new TextDecoder().decode(decrypted);
-}
-
-async function handleKeySubmission(event) {
-  event.preventDefault();
-
-  const form = event.currentTarget;
-  const chapterIndex = Number(form.dataset.chapterIndex);
+async function openStory(chapterIndex) {
   const chapter = config.chapters[chapterIndex];
-  const release = form.closest(".release");
-  const input = form.elements.key;
-  const button = form.querySelector('button[type="submit"]');
-  const status = form.querySelector(".key-form__status");
 
-  button.disabled = true;
-  input.disabled = true;
-  status.classList.remove("is-error");
-  status.textContent = "Comprobando la llave…";
-
-  try {
-    const response = await fetch(chapter.encryptedContent, { cache: "no-store" });
-    if (!response.ok) throw new Error("content-unavailable");
-
-    const payload = await response.json();
-    const html = await decryptContent(payload, input.value);
-    decryptedStories.set(chapterIndex, html);
-    input.value = "";
-    release.classList.add("is-decrypted");
-    status.textContent = "Llave correcta. La historia está abierta.";
-    release.querySelector(".story-link").focus();
-  } catch (error) {
-    status.classList.add("is-error");
-    status.textContent = error.message === "content-unavailable"
-      ? "No se pudo cargar la historia. Inténtalo de nuevo."
-      : "Esa llave no es correcta.";
-  } finally {
-    button.disabled = false;
-    input.disabled = false;
-    if (!release.classList.contains("is-decrypted")) input.focus();
+  let html = storyContents.get(chapterIndex);
+  if (!html) {
+    const response = await fetch(chapter.contentFile, { cache: "no-store" });
+    if (!response.ok) return;
+    html = await response.text();
+    storyContents.set(chapterIndex, html);
   }
-}
-
-function openStory(chapterIndex) {
-  const chapter = config.chapters[chapterIndex];
-  const html = decryptedStories.get(chapterIndex);
-  if (!html) return;
 
   document.querySelector("#reader-number").textContent = `Historia ${chapter.number}`;
   document.querySelector("#reader-title").textContent = chapter.title;
@@ -229,9 +131,6 @@ function initializeSite() {
 
   chaptersRoot.innerHTML = config.chapters.map(chapterMarkup).join("");
 
-  document.querySelectorAll(".key-form").forEach((form) => {
-    form.addEventListener("submit", handleKeySubmission);
-  });
   document.querySelectorAll("[data-read-index]").forEach((button) => {
     button.addEventListener("click", () => openStory(Number(button.dataset.readIndex)));
   });
