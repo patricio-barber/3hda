@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1100" role="img" aria-labelledby="title desc">
+  <title id="title">Imagen principal de muestra</title>
+  <desc id="desc">Paisaje abstracto en tonos café y azul.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#759097"/><stop offset=".55" stop-color="#c6afa0"/><stop offset="1" stop-color="#8b6653"/></linearGradient>
+    <linearGradient id="ground" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#594332"/><stop offset="1" stop-color="#171c18"/></linearGradient>
+    <filter id="grain"><feTurbulence baseFrequency=".85" numOctaves="3" stitchTiles="stitch"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .11"/></feComponentTransfer></filter>
+  </defs>
+  <rect width="1800" height="1100" fill="url(#sky)"/>
+  <path d="M0 590C190 520 334 640 516 563s331-20 498 25 288-74 428-48 245 69 358 19v541H0Z" fill="url(#ground)"/>
+  <path d="M0 767c248-68 392 74 626 10s343-15 532 22 389-63 642-1v302H0Z" fill="#32494a" opacity=".77"/>
+  <path d="M0 872c273-22 428 33 665 5 284-33 430 47 672 3 174-31 286-23 463 5" fill="none" stroke="#c8b5a1" stroke-width="5" opacity=".44"/>
+  <circle cx="1380" cy="250" r="128" fill="#ead9bd" opacity=".55"/>
+  <rect width="1800" height="1100" filter="url(#grain)" opacity=".55"/>
+  <g fill="#f7f0e7" opacity=".88" font-family="Arial, sans-serif" text-anchor="middle">
+    <text x="900" y="955" font-size="22" letter-spacing="7">REEMPLAZA ESTA IMAGEN</text>
+    <text x="900" y="994" font-size="15" letter-spacing="3">assets/images/hero-placeholder.svg</text>
+  </g>
+</svg>
