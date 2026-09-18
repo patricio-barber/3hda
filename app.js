@@ -5,17 +5,6 @@ const storyContents = new Map();
 
 const pad = (value) => String(value).padStart(2, "0");
 
-function formatReleaseDate(date) {
-  return new Intl.DateTimeFormat("es", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    timeZoneName: "short",
-  }).format(date);
-}
-
 function getTimeParts(milliseconds) {
   const secondsTotal = Math.max(0, Math.floor(milliseconds / 1000));
 
@@ -42,28 +31,17 @@ function countdownMarkup() {
 }
 
 function chapterMarkup(chapter, index) {
-  const release = new Date(chapter.releaseDate);
-
   return `
     <section class="chapter ${index % 2 ? "chapter--reverse" : ""}" id="historia-${index + 1}">
-      <figure class="chapter__visual">
-        <img src="${chapter.image}" alt="${chapter.imageAlt}" />
-        <figcaption>Historia ${chapter.number}</figcaption>
-      </figure>
-
       <div class="chapter__panel">
-        <p class="chapter__number">${chapter.number}</p>
         <h2>${chapter.title}</h2>
-        <p class="chapter__subtitle">${chapter.subtitle}</p>
 
         <div class="release" data-release="${chapter.releaseDate}">
-          <p class="release__label">Esta historia se abre en</p>
           ${countdownMarkup()}
-          <p class="release__date">${formatReleaseDate(release)}</p>
           <p class="release__announcement" role="status" aria-live="polite"></p>
 
           <button class="story-link" type="button" data-read-index="${index}">
-            Leer la historia <span aria-hidden="true">→</span>
+            ${chapter.storyTitle}
           </button>
         </div>
       </div>
@@ -83,7 +61,7 @@ async function openStory(chapterIndex) {
   }
 
   document.querySelector("#reader-number").textContent = `Historia ${chapter.number}`;
-  document.querySelector("#reader-title").textContent = chapter.title;
+  document.querySelector("#reader-title").textContent = chapter.storyTitle;
   document.querySelector("#reader-body").innerHTML = html;
   reader.showModal();
   reader.scrollTop = 0;
@@ -94,7 +72,6 @@ function unlockChapter(releaseElement) {
 
   releaseElement.dataset.unlocked = "true";
   releaseElement.classList.add("is-unlocked");
-  releaseElement.querySelector(".release__label").textContent = "La historia ya está disponible";
   releaseElement.querySelector(".release__announcement").textContent =
     "El capítulo se ha desbloqueado.";
 }
@@ -104,7 +81,7 @@ function updateCountdown(releaseElement) {
   const remaining = releaseTime - Date.now();
 
   if (!Number.isFinite(releaseTime)) {
-    releaseElement.querySelector(".release__label").textContent =
+    releaseElement.querySelector(".release__announcement").textContent =
       "Revisa la fecha de publicación en config.js";
     return;
   }
@@ -118,13 +95,11 @@ function updateCountdown(releaseElement) {
   Object.entries(parts).forEach(([unit, value]) => {
     releaseElement.querySelector(`[data-unit="${unit}"]`).textContent = pad(value);
   });
-
 }
 
 function initializeSite() {
   document.title = config.siteTitle;
   document.querySelector("#site-title").textContent = config.siteTitle;
-  document.querySelector("#footer-title").textContent = config.siteTitle;
   document.querySelector(".hero__image").style.backgroundImage = `url("${config.heroImage}")`;
 
   chaptersRoot.innerHTML = config.chapters.map(chapterMarkup).join("");

@@ -85,15 +85,6 @@ a {
   text-align: center;
 }
 
-.chapter__number,
-.release__label,
-.release__date,
-.chapter__visual figcaption {
-  font-family: var(--sans);
-  text-transform: uppercase;
-  letter-spacing: 0.18em;
-}
-
 h1 {
   max-width: 14ch;
   margin: 0 auto;
@@ -106,65 +97,21 @@ h1 {
 
 .chapter {
   display: grid;
-  grid-template-columns: minmax(0, 1.08fr) minmax(25rem, 0.92fr);
+  place-items: center;
   background: var(--brown);
 }
 
-.chapter--reverse .chapter__visual {
-  order: 2;
-}
-
-.chapter--reverse .chapter__panel {
+.chapter--reverse {
   background: #34231c;
 }
 
-.chapter__visual {
-  position: relative;
-  min-height: 100svh;
-  margin: 0;
-  overflow: hidden;
-}
-
-.chapter__visual::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, transparent 60%, rgba(26, 14, 9, 0.56));
-  pointer-events: none;
-}
-
-.chapter__visual img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  object-fit: cover;
-  transition: transform 1.2s ease;
-}
-
-.chapter:hover .chapter__visual img {
-  transform: scale(1.025);
-}
-
-.chapter__visual figcaption {
-  position: absolute;
-  z-index: 1;
-  right: 2rem;
-  bottom: 2rem;
-  font-size: 0.62rem;
-}
-
 .chapter__panel {
-  min-height: 100svh;
+  width: min(46rem, 100%);
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  padding: clamp(3rem, 7vw, 8rem);
-}
-
-.chapter__number {
-  margin: 0 0 1rem;
-  color: rgba(247, 240, 231, 0.68);
-  font-size: 0.68rem;
+  align-items: center;
+  padding: clamp(3rem, 7vw, 6rem) 1.5rem;
+  text-align: center;
 }
 
 h2 {
@@ -175,31 +122,8 @@ h2 {
   letter-spacing: -0.035em;
 }
 
-.chapter__subtitle {
-  max-width: 27rem;
-  margin: 1.4rem 0 clamp(3.5rem, 8vh, 6.5rem);
-  color: rgba(247, 240, 231, 0.8);
-  font-size: clamp(1rem, 1.35vw, 1.25rem);
-  font-style: italic;
-  line-height: 1.5;
-}
-
 .release {
-  padding-top: 1.4rem;
-  border-top: 1px solid var(--line);
-}
-
-.release__label,
-.release__date {
-  margin: 0;
-  font-size: 0.64rem;
-}
-
-.release__date {
-  margin-top: 1.3rem;
-  color: rgba(247, 240, 231, 0.58);
-  letter-spacing: 0.08em;
-  text-transform: none;
+  margin-top: clamp(3rem, 8vh, 6rem);
 }
 
 .release__announcement {
@@ -218,7 +142,7 @@ h2 {
   display: flex;
   align-items: flex-start;
   gap: clamp(0.45rem, 1.5vw, 1.1rem);
-  margin-top: 1.65rem;
+  margin: 0;
   font-family: var(--sans);
 }
 
@@ -256,14 +180,13 @@ h2 {
 .story-link {
   display: none;
   width: fit-content;
-  margin-top: 1.6rem;
+  margin: 0 auto;
   padding: 0.95rem 1.2rem;
   border: 1px solid var(--cream);
   font-family: var(--sans);
   font-size: 0.68rem;
   letter-spacing: 0.14em;
   text-decoration: none;
-  text-transform: uppercase;
   color: var(--cream);
   background: transparent;
   cursor: pointer;
@@ -276,12 +199,7 @@ h2 {
   background: var(--cream);
 }
 
-.story-link span {
-  margin-left: 1.2rem;
-}
-
-.release.is-unlocked .countdown,
-.release.is-unlocked .release__date {
+.release.is-unlocked .countdown {
   display: none;
 }
 
@@ -361,32 +279,6 @@ h2 {
   margin: 0 0 1.5em;
 }
 
-.footer {
-  min-height: 36vh;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 2rem;
-  padding: clamp(2rem, 5vw, 5rem);
-  color: var(--ink);
-  background: var(--paper);
-}
-
-.footer p {
-  max-width: 18ch;
-  margin: 0;
-  font-size: clamp(1.8rem, 4vw, 4rem);
-  line-height: 0.98;
-}
-
-.footer a {
-  font-family: var(--sans);
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-underline-offset: 0.35rem;
-}
-
 .noscript {
   position: fixed;
   z-index: 50;
@@ -403,27 +295,8 @@ h2 {
     font-size: clamp(3.25rem, 16vw, 5.75rem);
   }
 
-  .chapter,
-  .chapter--reverse {
-    grid-template-columns: 1fr;
-  }
-
-  .chapter__visual,
   .chapter__panel {
-    min-height: 58svh;
-  }
-
-  .chapter--reverse .chapter__visual {
-    order: 0;
-  }
-
-  .chapter__panel {
-    justify-content: flex-start;
-    padding: 3.25rem 1.5rem 4.5rem;
-  }
-
-  .chapter__subtitle {
-    margin-bottom: 3.5rem;
+    padding-inline: 1rem;
   }
 
   .countdown {
@@ -443,18 +316,10 @@ h2 {
     padding-top: 0.4rem;
   }
 
-  .footer {
-    align-items: flex-start;
-    flex-direction: column;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-
-  .chapter__visual img {
-    transition: none;
   }
 }

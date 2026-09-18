@@ -3,7 +3,7 @@
 
   Fechas: usa el formato AAAA-MM-DDTHH:MM:SS-05:00.
   El final (-05:00, por ejemplo) indica la zona horaria de publicación.
-  Imágenes: guarda tus fotos en assets/images/ y escribe aquí su ruta.
+  Portada: guarda tu foto en assets/images/ y escribe aquí su ruta.
 */
 
 window.STORY_CONFIG = {
@@ -14,28 +14,22 @@ window.STORY_CONFIG = {
     {
       number: "I",
       title: "Historia uno",
-      subtitle: "El mar",
-      releaseDate: "2026-09-15T20:00:00-04:00",
-      image: "assets/images/chapter-1-placeholder.svg",
-      imageAlt: "Fotografía de la primera historia",
+      storyTitle: "El Mar",
+      releaseDate: "2026-10-23T20:00:00-04:00",
       contentFile: "content/historia-uno.html",
     },
     {
       number: "II",
       title: "Historia dos",
-      subtitle: "El cuarto",
-      releaseDate: "2026-10-01T20:00:00-04:00",
-      image: "assets/images/chapter-2-placeholder.svg",
-      imageAlt: "Fotografía de la segunda historia",
+      storyTitle: "Las Flores",
+      releaseDate: "2026-11-13T20:00:00-05:00",
       contentFile: "content/historia-dos.html",
     },
     {
       number: "III",
       title: "Historia tres",
-      subtitle: "El sueño",
-      releaseDate: "2026-10-15T20:00:00-04:00",
-      image: "assets/images/chapter-3-placeholder.svg",
-      imageAlt: "Fotografía de la tercera historia",
+      storyTitle: "El Sueño",
+      releaseDate: "2026-11-23T20:00:00-05:00",
       contentFile: "content/historia-tres.html",
     },
   ],
