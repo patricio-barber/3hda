@@ -8,13 +8,14 @@
 
 window.STORY_CONFIG = {
   siteTitle: "Tres historias de una carta de amor fallida",
-  heroImage: "assets/images/hero-placeholder.svg",
+  heroImage: "assets/images/titulo.jpg",
 
   chapters: [
     {
       number: "I",
       title: "Historia uno",
       storyTitle: "El Mar",
+      image: "assets/images/el_mar.JPG",
       releaseDate: "2026-10-23T20:00:00-04:00",
       contentFile: "content/historia-uno.html",
     },
@@ -22,6 +23,7 @@ window.STORY_CONFIG = {
       number: "II",
       title: "Historia dos",
       storyTitle: "Las Flores",
+      image: "assets/images/las flores.jpg",
       releaseDate: "2026-11-13T20:00:00-05:00",
       contentFile: "content/historia-dos.html",
     },
@@ -29,6 +31,7 @@ window.STORY_CONFIG = {
       number: "III",
       title: "Historia tres",
       storyTitle: "El Sueño",
+      image: "assets/images/el_sueño.JPG",
       releaseDate: "2026-11-23T20:00:00-05:00",
       contentFile: "content/historia-tres.html",
     },

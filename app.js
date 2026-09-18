@@ -32,7 +32,7 @@ function countdownMarkup() {
 
 function chapterMarkup(chapter, index) {
   return `
-    <section class="chapter ${index % 2 ? "chapter--reverse" : ""}" id="historia-${index + 1}">
+    <section class="chapter" id="historia-${index + 1}" style="--chapter-image: url('${chapter.image}')">
       <div class="chapter__panel">
         <h2>${chapter.title}</h2>
 
