@@ -16,7 +16,7 @@ window.STORY_CONFIG = {
       title: "Historia uno",
       storyTitle: "El Mar",
       image: "assets/images/el_mar.JPG",
-      releaseDate: "2026-10-23T20:00:00-04:00",
+      releaseDate: "2026-10-25T12:00:00+01:00",
       contentFile: "content/historia-uno.html",
     },
     {
