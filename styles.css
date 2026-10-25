@@ -368,7 +368,7 @@ h2 {
   font-size: clamp(1.05rem, 1.7vw, 1.25rem);
   line-height: 1.8;
 }
-.sea-reader__text p { margin: 0 0 1em; white-space: pre-line; }
+.sea-reader__text p { margin: 0 0 1em; white-space: normal; }
 .sea-reader__nav { padding-top: 1rem; border-top: 1px solid var(--line); }
 .sea-reader button {
   padding: 0.65rem 0.4rem;
@@ -382,3 +382,7 @@ h2 {
 .sea-reader button:focus-visible { outline: 2px solid var(--cream); outline-offset: 2px; }
 .sea-reader button:hover:enabled { text-decoration: underline; }
 .sea-reader__nav { font-size: clamp(0.75rem, 2.5vw, 0.95rem); }
+
+.sea-reader__text .story-divider {
+  text-align: center;
+}
