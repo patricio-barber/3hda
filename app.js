@@ -36,8 +36,8 @@ function chapterMarkup(chapter, index) {
       <div class="chapter__panel">
         <h2>${chapter.title}</h2>
 
-        <div class="release" data-release="${chapter.releaseDate}">
-          ${countdownMarkup()}
+        <div class="release ${index === 0 ? "is-unlocked" : ""}" data-release="${chapter.releaseDate}">
+          ${index === 0 ? "" : countdownMarkup()}
           <p class="release__announcement" role="status" aria-live="polite"></p>
 
           <button class="story-link" type="button" data-read-index="${index}">
@@ -45,6 +45,19 @@ function chapterMarkup(chapter, index) {
           </button>
         </div>
       </div>
+      ${index === 0 ? `
+        <section class="sea-reader" hidden aria-label="Lectura de El Mar">
+          <header class="sea-reader__header">
+            <h3 tabindex="-1">El Mar</h3>
+            <button type="button" data-sea-close>Cerrar ×</button>
+          </header>
+          <div class="sea-reader__text"></div>
+          <nav class="sea-reader__nav" aria-label="Páginas de El Mar">
+            <button type="button" data-sea-prev>← Anterior</button>
+            <span data-sea-status role="status" aria-live="polite"></span>
+            <button type="button" data-sea-next>Siguiente →</button>
+          </nav>
+        </section>` : ""}
     </section>
   `;
 }
@@ -55,9 +68,22 @@ async function openStory(chapterIndex) {
   let html = storyContents.get(chapterIndex);
   if (!html) {
     const response = await fetch(chapter.contentFile, { cache: "no-store" });
-    if (!response.ok) return;
+    if (!response.ok) throw new Error("No se pudo cargar la historia.");
     html = await response.text();
     storyContents.set(chapterIndex, html);
+  }
+
+  if (chapterIndex === 0) {
+    const overlay = document.querySelector(".sea-reader");
+    const content = document.createElement("div");
+    content.innerHTML = html;
+    seaPages = [...content.querySelectorAll(".story-page")];
+    seaPageIndex = 0;
+    renderSeaPage();
+    overlay.hidden = false;
+    document.querySelector("#historia-1 .chapter__panel").hidden = true;
+    overlay.querySelector("h3").focus({ preventScroll: true });
+    return;
   }
 
   document.querySelector("#reader-number").textContent = `Historia ${chapter.number}`;
@@ -65,6 +91,25 @@ async function openStory(chapterIndex) {
   document.querySelector("#reader-body").innerHTML = html;
   reader.showModal();
   reader.scrollTop = 0;
+}
+
+let seaPages = [];
+let seaPageIndex = 0;
+
+function renderSeaPage() {
+  const overlay = document.querySelector(".sea-reader");
+  const text = overlay.querySelector(".sea-reader__text");
+  text.replaceChildren(seaPages[seaPageIndex].cloneNode(true));
+  text.scrollTop = 0;
+  overlay.querySelector("[data-sea-status]").textContent = `Página ${seaPageIndex + 1} de ${seaPages.length}`;
+  overlay.querySelector("[data-sea-prev]").disabled = seaPageIndex === 0;
+  overlay.querySelector("[data-sea-next]").disabled = seaPageIndex === seaPages.length - 1;
+}
+
+function closeSeaReader() {
+  document.querySelector(".sea-reader").hidden = true;
+  document.querySelector("#historia-1 .chapter__panel").hidden = false;
+  document.querySelector('[data-read-index="0"]').focus({ preventScroll: true });
 }
 
 function unlockChapter(releaseElement) {
@@ -105,14 +150,34 @@ function initializeSite() {
   chaptersRoot.innerHTML = config.chapters.map(chapterMarkup).join("");
 
   document.querySelectorAll("[data-read-index]").forEach((button) => {
-    button.addEventListener("click", () => openStory(Number(button.dataset.readIndex)));
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      try {
+        await openStory(Number(button.dataset.readIndex));
+      } catch (error) {
+        button.closest(".release").querySelector(".release__announcement").textContent =
+          "No se pudo cargar la historia. Inténtalo de nuevo.";
+      } finally {
+        button.disabled = false;
+      }
+    });
+  });
+  document.querySelector("[data-sea-close]").addEventListener("click", closeSeaReader);
+  document.querySelector("[data-sea-prev]").addEventListener("click", () => {
+    if (seaPageIndex > 0) { seaPageIndex--; renderSeaPage(); }
+  });
+  document.querySelector("[data-sea-next]").addEventListener("click", () => {
+    if (seaPageIndex < seaPages.length - 1) { seaPageIndex++; renderSeaPage(); }
+  });
+  document.querySelector(".sea-reader").addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeSeaReader();
   });
   reader.querySelector(".reader__close").addEventListener("click", () => reader.close());
   reader.addEventListener("click", (event) => {
     if (event.target === reader) reader.close();
   });
 
-  const releases = [...document.querySelectorAll(".release")];
+  const releases = [...document.querySelectorAll(".release:not(.is-unlocked)")];
   const updateAll = () => releases.forEach(updateCountdown);
   updateAll();
   window.setInterval(updateAll, 1000);

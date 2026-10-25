@@ -324,3 +324,61 @@ h2 {
     scroll-behavior: auto;
   }
 }
+
+/* Lectura de El Mar sobre la fotografía de historia uno. */
+.chapter { position: relative; }
+.chapter__panel[hidden], .sea-reader[hidden] { display: none; }
+
+#historia-1 .story-link {
+  border: 0;
+  font-family: var(--serif);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  letter-spacing: 0;
+}
+
+.sea-reader {
+  width: min(52rem, calc(100% - 2rem));
+  height: min(52rem, 92svh);
+  margin: 2rem auto;
+  padding: clamp(1rem, 3vw, 2.5rem);
+  display: flex;
+  flex-direction: column;
+  color: var(--cream);
+  background: rgba(25, 20, 17, 0.78);
+  border: 1px solid var(--line);
+  box-shadow: 0 1rem 4rem rgba(0, 0, 0, 0.2);
+}
+
+.sea-reader__header, .sea-reader__nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.sea-reader h3 { margin: 0; font-size: 2rem; font-weight: 400; }
+.sea-reader__header { padding-bottom: 1rem; border-bottom: 1px solid var(--line); }
+.sea-reader__text {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 1.5rem 0;
+  font-size: clamp(1.05rem, 1.7vw, 1.25rem);
+  line-height: 1.8;
+}
+.sea-reader__text p { margin: 0 0 1em; white-space: pre-line; }
+.sea-reader__nav { padding-top: 1rem; border-top: 1px solid var(--line); }
+.sea-reader button {
+  padding: 0.65rem 0.4rem;
+  color: inherit;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+}
+.sea-reader button:disabled { opacity: 0.35; cursor: default; }
+.sea-reader button:focus-visible { outline: 2px solid var(--cream); outline-offset: 2px; }
+.sea-reader button:hover:enabled { text-decoration: underline; }
+.sea-reader__nav { font-size: clamp(0.75rem, 2.5vw, 0.95rem); }
