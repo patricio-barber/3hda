@@ -24,7 +24,7 @@ window.STORY_CONFIG = {
       title: "Historia dos",
       storyTitle: "Las Flores",
       image: "assets/images/las flores.jpg",
-      releaseDate: "2026-11-13T20:00:00-05:00",
+      releaseDate: "2026-11-15T23:59:00-05:00",
       contentFile: "content/historia-dos.html",
     },
     {
