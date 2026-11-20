@@ -36,8 +36,8 @@ function chapterMarkup(chapter, index) {
       <div class="chapter__panel">
         <h2>${chapter.title}</h2>
 
-        <div class="release ${index === 0 ? "is-unlocked" : ""}" data-release="${chapter.releaseDate}">
-          ${index === 0 ? "" : countdownMarkup()}
+        <div class="release ${index < 2 ? "is-unlocked" : ""}" data-release="${chapter.releaseDate}">
+          ${index < 2 ? "" : countdownMarkup()}
           <p class="release__announcement" role="status" aria-live="polite"></p>
 
           <button class="story-link" type="button" data-read-index="${index}">
@@ -45,14 +45,14 @@ function chapterMarkup(chapter, index) {
           </button>
         </div>
       </div>
-      ${index === 0 ? `
-        <section class="sea-reader" hidden aria-label="Lectura de El Mar">
+      ${index < 2 ? `
+        <section class="sea-reader" hidden aria-label="Lectura de ${chapter.storyTitle}">
           <header class="sea-reader__header">
-            <h3 tabindex="-1">El Mar</h3>
+            <h3 tabindex="-1">${chapter.storyTitle}</h3>
             <button type="button" data-sea-close>Cerrar ×</button>
           </header>
           <div class="sea-reader__text"></div>
-          <nav class="sea-reader__nav" aria-label="Páginas de El Mar">
+          <nav class="sea-reader__nav" aria-label="Páginas de ${chapter.storyTitle}">
             <button type="button" data-sea-prev>← Anterior</button>
             <span data-sea-status role="status" aria-live="polite"></span>
             <button type="button" data-sea-next>Siguiente →</button>
@@ -73,15 +73,17 @@ async function openStory(chapterIndex) {
     storyContents.set(chapterIndex, html);
   }
 
-  if (chapterIndex === 0) {
-    const overlay = document.querySelector(".sea-reader");
+  if (chapterIndex < 2) {
+    if (seaPages.length) closeSeaReader();
+    seaChapterIndex = chapterIndex;
+    const overlay = document.querySelector(`#historia-${seaChapterIndex + 1} .sea-reader`);
     const content = document.createElement("div");
     content.innerHTML = html;
     seaPages = [...content.querySelectorAll(".story-page")];
     seaPageIndex = 0;
     renderSeaPage();
     overlay.hidden = false;
-    document.querySelector("#historia-1 .chapter__panel").hidden = true;
+    document.querySelector(`#historia-${seaChapterIndex + 1} .chapter__panel`).hidden = true;
     overlay.querySelector("h3").focus({ preventScroll: true });
     return;
   }
@@ -93,11 +95,12 @@ async function openStory(chapterIndex) {
   reader.scrollTop = 0;
 }
 
+let seaChapterIndex = 0;
 let seaPages = [];
 let seaPageIndex = 0;
 
 function renderSeaPage() {
-  const overlay = document.querySelector(".sea-reader");
+  const overlay = document.querySelector(`#historia-${seaChapterIndex + 1} .sea-reader`);
   const text = overlay.querySelector(".sea-reader__text");
   text.replaceChildren(seaPages[seaPageIndex].cloneNode(true));
   text.scrollTop = 0;
@@ -107,9 +110,9 @@ function renderSeaPage() {
 }
 
 function closeSeaReader() {
-  document.querySelector(".sea-reader").hidden = true;
-  document.querySelector("#historia-1 .chapter__panel").hidden = false;
-  document.querySelector('[data-read-index="0"]').focus({ preventScroll: true });
+  document.querySelector(`#historia-${seaChapterIndex + 1} .sea-reader`).hidden = true;
+  document.querySelector(`#historia-${seaChapterIndex + 1} .chapter__panel`).hidden = false;
+  document.querySelector(`[data-read-index="${seaChapterIndex}"]`).focus({ preventScroll: true });
 }
 
 function unlockChapter(releaseElement) {
@@ -162,15 +165,17 @@ function initializeSite() {
       }
     });
   });
-  document.querySelector("[data-sea-close]").addEventListener("click", closeSeaReader);
-  document.querySelector("[data-sea-prev]").addEventListener("click", () => {
-    if (seaPageIndex > 0) { seaPageIndex--; renderSeaPage(); }
-  });
-  document.querySelector("[data-sea-next]").addEventListener("click", () => {
-    if (seaPageIndex < seaPages.length - 1) { seaPageIndex++; renderSeaPage(); }
-  });
-  document.querySelector(".sea-reader").addEventListener("keydown", (event) => {
-    if (event.key === "Escape") closeSeaReader();
+  document.querySelectorAll(".sea-reader").forEach((overlay) => {
+    overlay.querySelector("[data-sea-close]").addEventListener("click", closeSeaReader);
+    overlay.querySelector("[data-sea-prev]").addEventListener("click", () => {
+      if (seaPageIndex > 0) { seaPageIndex--; renderSeaPage(); }
+    });
+    overlay.querySelector("[data-sea-next]").addEventListener("click", () => {
+      if (seaPageIndex < seaPages.length - 1) { seaPageIndex++; renderSeaPage(); }
+    });
+    overlay.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeSeaReader();
+    });
   });
   reader.querySelector(".reader__close").addEventListener("click", () => reader.close());
   reader.addEventListener("click", (event) => {

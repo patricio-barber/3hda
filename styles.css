@@ -325,11 +325,12 @@ h2 {
   }
 }
 
-/* Lectura de El Mar sobre la fotografía de historia uno. */
+/* Lectura por páginas sobre la fotografía de cada historia. */
 .chapter { position: relative; }
 .chapter__panel[hidden], .sea-reader[hidden] { display: none; }
 
-#historia-1 .story-link {
+#historia-1 .story-link,
+#historia-2 .story-link {
   border: 0;
   font-family: var(--serif);
   font-size: clamp(2.5rem, 5vw, 4.5rem);
@@ -385,4 +386,14 @@ h2 {
 
 .sea-reader__text .story-divider {
   text-align: center;
+}
+
+.sea-reader__text .story-illustration {
+  display: block;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 16rem;
+  margin: 1.5rem auto;
+  background: var(--paper);
 }
