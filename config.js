@@ -32,7 +32,7 @@ window.STORY_CONFIG = {
       title: "Historia tres",
       storyTitle: "El Sueño",
       image: "assets/images/el_sueno.JPG",
-      releaseDate: "2026-11-23T20:00:00-05:00",
+      releaseDate: "2026-11-27T18:00:00-05:00",
       contentFile: "content/historia-tres.html",
     },
   ],
